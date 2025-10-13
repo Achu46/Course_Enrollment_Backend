@@ -1,10 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const db=require("../backend/config/db");
+require("../backend/config/db");
+const userRoutes = require("../backend/routes/routes.js");
 
 app.use(express.json());
-// app.use(db);
+app.use("/api", userRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "404 - Page not found" });
