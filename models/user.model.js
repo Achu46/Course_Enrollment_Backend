@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
 const courseSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  courseCode: { type: String, requires: true, unique: true },
+  courseCode: { type: String, required: true, unique: true },
   duration: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },

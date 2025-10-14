@@ -3,7 +3,9 @@ const express = require("express");
 const app = express();
 require("../backend/config/db");
 const userRoutes = require("../backend/routes/routes.js");
+const cors = require("cors");
 
+app.use(cors());
 app.use(express.json());
 app.use("/api", userRoutes);
 
