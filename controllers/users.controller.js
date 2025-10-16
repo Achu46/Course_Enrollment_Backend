@@ -72,17 +72,19 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "error can't find the data", error: err.message });
-  }
-};
+// for testing purpose 
+// exports.getUsers = async (req, res) => {
+//   try {
+//     const users = await User.find();
+//     res.status(200).json(users);
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ message: "error can't find the data", error: err.message });
+//   }
+// };
 
+// Login with authentication(JWT) & password compare
 exports.loginUsers = async (req, res) => {
   try {
     const { email, password } = req.body;
