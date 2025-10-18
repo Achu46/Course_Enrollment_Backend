@@ -16,14 +16,16 @@ exports.registerCourse = async (req, res) => {
       endDate,
     });
 
-    // In this function the course code should be unique so the findOne() method is used to find out 
+    // In this function the course code should be unique so the findOne() method is used to find out
     const existingCourseCode = await Course.findOne({ courseCode });
     if (existingCourseCode) {
       console.log("Course code is already exists");
-      return res.status(400).json({ message: "❌ Course code is already exists" });
+      return res
+        .status(400)
+        .json({ message: "❌ Course code is already exists" });
     }
 
-    await course.save();// it's an area to save the data into DB
+    await course.save(); // it's an area to save the data into DB
     return res
       .status(200)
       .json({ message: "🍾 Courses inserted successfully" });
@@ -32,5 +34,16 @@ exports.registerCourse = async (req, res) => {
     return res
       .status(500)
       .json({ message: "⚠️ Courses are not been inserted" });
+  }
+};
+
+exports.getCourses = async (req, res) => {
+  try {
+    const courses = await Course.find();
+    res.status(200).json(courses);
+  } catch (err) {
+    res
+      .status(400)
+      .json({ message: "Error occur in fetching data:", error: err.message });
   }
 };
