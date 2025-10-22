@@ -1,41 +1,31 @@
-const { User } = require("../models/user.model");
+const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+const generateStudentId = () => {
+  return [...Array(8)]
+    .map(
+      () =>
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)]
+    )
+    .join("");
+};
 
 exports.registerUser = async (req, res) => {
   try {
     console.log("📦 Received body:", req.body);
-    const { name, email, password, mobileNumber, gender, studentId } = req.body;
+    const { name, email, password, mobileNumber, gender } = req.body;
 
-    // Basic validation
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !mobileNumber ||
-      !gender ||
-      !studentId
-    ) {
-      console.log("❌ Missing field(s):", {
-        name,
-        email,
-        password,
-        mobileNumber,
-        gender,
-        studentId,
-      });
+    if (!name || !email || !password || !mobileNumber || !gender) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check duplicates
-    const existingUser = await User.findOne({
-      $or: [{ email }, { mobileNumber }, { student_id: studentId }],
-    });
-    if (existingUser) {
-      return res.status(400).json({
-        message: "User with same email, mobile, or student ID already exists",
-      });
-    }
+    let studentId;
+    let existingUser;
+    do {
+      studentId = generateStudentId();
+      existingUser = await User.findOne({ student_id: studentId });
+    } while (existingUser);
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -72,17 +62,19 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// for testing purpose 
-// exports.getUsers = async (req, res) => {
-//   try {
-//     const users = await User.find();
-//     res.status(200).json(users);
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ message: "error can't find the data", error: err.message });
-//   }
-// };
+// for testing purpose
+exports.getUsers = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    const user = await User.findOne({ email }, "student_id");
+    if (!user) return res.status(404).json({ message: "Student is not found" });
+    res.json({ studentId: user.student_id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 // Login with authentication(JWT) & password compare
 exports.loginUsers = async (req, res) => {
@@ -102,7 +94,12 @@ exports.loginUsers = async (req, res) => {
       }
     );
     console.log("🍾 Logged in Token:", token);
-    res.json({ token });
+    res.json({
+      token,
+      name: user.name,
+      email: user.email,
+      studentId: user.student_id,
+    });
   } catch (err) {
     console.error("Error: ", err.message);
     res.status(500).json({ message: "Internal Server error" });

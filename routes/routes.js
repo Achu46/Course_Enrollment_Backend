@@ -4,6 +4,7 @@ const {
   registerUser,
   // getUsers,
   loginUsers,
+  getUsers,
 } = require("../controllers/users.controller");
 const {
   registerCourse,
@@ -18,5 +19,6 @@ router.post("/student-login", loginUsers);
 router.post("/course-register", registerCourse);
 router.get("/fetch-courses", getCourses);
 router.post("/course-enroll", registerEnrollment);
+router.get("/student-id", getUsers);
 
 module.exports = router;
