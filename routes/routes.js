@@ -10,7 +10,10 @@ const {
   registerCourse,
   getCourses,
 } = require("../controllers/courses.controller");
-const { registerEnrollment } = require("../controllers/enrollments.controller");
+const {
+  registerEnrollment,
+  getEnrolledCourse,
+} = require("../controllers/enrollments.controller");
 
 // Routes
 router.post("/register", registerUser);
@@ -20,5 +23,6 @@ router.post("/course-register", registerCourse);
 router.get("/fetch-courses", getCourses);
 router.post("/course-enroll", registerEnrollment);
 router.get("/student-id", getUsers);
+router.get("/enrolled-course", getEnrolledCourse);
 
 module.exports = router;

@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const enrollmentSchema = mongoose.Schema({
-  student_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  // student_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  student_id: { type: String, required: true },
   course_id: { type: mongoose.Schema.Types.ObjectId },
   enrollmentDate: { type: Date, default: Date.now() },
   status: {
